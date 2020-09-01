@@ -33,6 +33,7 @@ public class RequestHandler extends Thread {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
+<<<<<<< HEAD
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다. 
         	BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
         	String line = br.readLine();
@@ -83,6 +84,13 @@ public class RequestHandler extends Thread {
         	
         	movePage(url,out);
 
+=======
+            // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
+            DataOutputStream dos = new DataOutputStream(out);
+            byte[] body = "Hello Gun".getBytes();
+            response200Header(dos, body.length);
+            responseBody(dos, body);
+>>>>>>> refs/remotes/origin/master
         } catch (IOException e) {
             log.error(e.getMessage());
         }
