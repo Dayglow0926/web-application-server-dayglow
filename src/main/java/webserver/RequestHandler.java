@@ -65,6 +65,7 @@ public class RequestHandler extends Thread {
 	}
 
 	private void responsePage(){
-		// 매핑 시킨 후 해당 요청에 맞는 페이지 전달
+		// 매핑 시킨 후 해당 요청에 맞는 페이지 전
+		// commit test
 	}
 }
