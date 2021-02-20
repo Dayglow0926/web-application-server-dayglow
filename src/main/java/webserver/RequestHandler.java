@@ -2,6 +2,7 @@ package webserver;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.file.Files;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,8 @@ public class RequestHandler extends Thread {
 			log.debug("request line : {}",line);
 			if(line == null) return;
 
+			String[] tokens = line.split(" ");
+
 			while(!line.equals("")){
 				line = br.readLine();
 				log.debug("header : {}",line);
@@ -36,9 +39,14 @@ public class RequestHandler extends Thread {
 
 			// TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
 			DataOutputStream dos = new DataOutputStream(out);
-			byte[] body = "Hello World".getBytes();
-			response200Header(dos, body.length);
+
+			byte[] body = Files.readAllBytes(new File("./webapp"+tokens[1]).toPath());
+
+			if(tokens[1].endsWith(".css")) response200CssHeader(dos,body.length);
+			else response200Header(dos, body.length);
+
 			responseBody(dos, body);
+
 		} catch (IOException e) {
 			log.error(e.getMessage());
 		}
@@ -55,6 +63,17 @@ public class RequestHandler extends Thread {
 		}
 	}
 
+	private void response200CssHeader(DataOutputStream dos, int lengthOfBodyContent) {
+		try {
+			dos.writeBytes("HTTP/1.1 200 OK \r\n");
+			dos.writeBytes("Content-Type: text/css;charset=utf-8\r\n");
+			dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
+			dos.writeBytes("\r\n");
+		} catch (IOException e) {
+			log.error(e.getMessage());
+		}
+	}
+
 	private void responseBody(DataOutputStream dos, byte[] body) {
 		try {
 			dos.write(body, 0, body.length);
@@ -64,8 +83,4 @@ public class RequestHandler extends Thread {
 		}
 	}
 
-	private void responsePage(){
-		// 매핑 시킨 후 해당 요청에 맞는 페이지 전
-		// commit test
-	}
 }
